@@ -18,7 +18,7 @@ ezButton NEXT_BUTTON(8);
 ezButton PAUSE_BUTTON(9);
 
 #define VLM_PIN A0
-#define SAMPLES 10 //average of x values to stabilize reading
+#define SAMPLES 20 //average of x values to stabilize reading , 10 ?
 
 #define BUSY_PIN 2
 
