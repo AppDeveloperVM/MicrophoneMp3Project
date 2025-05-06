@@ -175,13 +175,14 @@ void handlePowerButton() {
         myDFPlayer.playFolder(MP3_SOUNDS_FOLDER, 1);
 
         // 2. Ejecutar el fade LED mientras suena
+        isOn = !isOn;
+        
         if (!isOn) {
           Initiation();  // hace fade
         } else {
           turnOff();     // hace fade
         }
 
-        isOn = !isOn;
         lastPressTime = now;
       }
     }
@@ -191,7 +192,8 @@ void handlePowerButton() {
 }
 
 void handlePlaybackButtons() {
-  // if (!isOn) return; 
+  if (!isOn) return; 
+  
   if (PAUSE_BUTTON.isPressed()) {
     if (isPlaying) pause();
     else resume();
