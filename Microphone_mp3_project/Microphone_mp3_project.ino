@@ -22,7 +22,7 @@ ezButton PAUSE_BUTTON(9);
 
 #define BUSY_PIN 2
 
-#define VOLUME_LEVEL 7 // 0 - 30 ( 18 is a good level )
+#define VOLUME_LEVEL 3 // 0 - 30 ( 18 is a good level )
 #define MAX_VLM_LVL 23
 #define MP3_SOUNDS_FOLDER 10
 
@@ -54,8 +54,9 @@ int powerState = HIGH;
 int OnState = LOW;
 int OffState = HIGH;
 
-boolean isOn = false;//false default
+boolean isOn = false;
 boolean isPlaying = false;
+bool isPaused = false;
 boolean initSound = false;
 boolean folder_changed = false;
 boolean has_media = true;
@@ -108,7 +109,7 @@ void setup()
     D_print(myDFPlayer.numSdTracks());
     D_println();
   
-    num_tracks_in_folder = myDFPlayer.numTracksInFolder(actual_folder);
+    num_tracks_in_folder = 2; //myDFPlayer.numTracksInFolder(actual_folder);
   
     D_print("Current track : ");
     D_print(myDFPlayer.currentSdTrack());
@@ -175,14 +176,15 @@ void handlePowerButton() {
         myDFPlayer.playFolder(MP3_SOUNDS_FOLDER, 1);
 
         // 2. Ejecutar el fade LED mientras suena
-        isOn = !isOn;
-        
-        if (!isOn) {
-          Initiation();  // hace fade
+        bool nextState = !isOn;
+
+        if (nextState) {
+          Initiation();  // encendido
         } else {
-          turnOff();     // hace fade
+          turnOff();     // apagado
         }
 
+        isOn = nextState;
         lastPressTime = now;
       }
     }
@@ -193,29 +195,20 @@ void handlePowerButton() {
 
 void handlePlaybackButtons() {
   if (!isOn) return; 
-  
-  if (PAUSE_BUTTON.isPressed()) {
-    if (isPlaying) pause();
-    else resume();
+
+  if (PAUSE_BUTTON.isReleased()) {
+    if (isPaused) resume();
+    else pause();
   }
 
-  if (NEXT_BUTTON.isPressed()) {
+  // NEXT button
+  if (NEXT_BUTTON.isReleased()) {
     playNextSong();
   }
 
-  if (CHANGE_FOLDER.isPressed()) {
+  // CHANGE_FOLDER
+  if (CHANGE_FOLDER.isReleased()) {
     changeFolder();
-    updateActualFolder();
-
-    D_println();
-    D_print("Changing folder to: ");
-    D_println(next_folder);
-
-    num_tracks_in_folder = myDFPlayer.numTracksInFolder(next_folder);
-    D_print("Tracks in folder ");
-    D_print(next_folder);
-    D_print(": ");
-    D_println(num_tracks_in_folder);
   }
 }
 
@@ -259,28 +252,13 @@ void fadeLed(boolean input){
 
 void playNextSong(){
 
-  if(initSound == true){
-    // Play init Sound
+  if(initSound){
     actual_track_n = 1;
     initSound = false;
-  }else{
-
-    if(actual_folder != next_folder){
-      //after changing folder, play first sound of folder
-       actual_track_n = 1;
-       actual_folder = next_folder;
-    }else{
-      if(actual_track_n < num_tracks_in_folder) {
-        actual_track_n++;
-      }else{
-        actual_track_n = 1;
-      }
-        
-    }
-      
+  } else {
+    actual_track_n = (actual_track_n % num_tracks_in_folder) + 1;
   }
-  
-  
+
   myDFPlayer.playFolder(actual_folder,actual_track_n);
   //isPlaying = true;
   D_print("-Playing track "); 
@@ -298,59 +276,47 @@ void playNextSong(){
 }
 
 void changeFolder(){
+  next_folder++;
 
-  if(next_folder < num_folders){
-    next_folder++;
-  }else{
+  if (next_folder > num_folders) {
     next_folder = 1;
   }
 
+  actual_folder = next_folder;
   actual_track_n = 1;
-  
   folder_changed = true;
   
-  delay(200);
-}
 
-void updateActualFolder(){
-  actual_folder = next_folder;
+  D_print("Changed to folder: ");
+  D_println(actual_folder);
+
+  num_tracks_in_folder = 5; //myDFPlayer.numTracksInFolder(actual_folder);
+  if (num_tracks_in_folder == -1) {
+    D_println("⚠️ Carpeta no encontrada. Verifica nombres en la SD.");
+  } else {
+    D_print("Tracks in folder ");
+    D_print(actual_folder);
+    D_print(": ");
+    D_println(num_tracks_in_folder);
+  }
+
+  myDFPlayer.playFolder(actual_folder, actual_track_n);
   
   delay(200);
 }
 
 void pause(){
-  if(initSound == true){
-    myDFPlayer.playFolder(actual_folder,actual_track_n);
-    D_println("-Playing first song- ");
-    initSound = false;
-  }else{
-    myDFPlayer.pause();
-    D_println("-Paused- ");
-  }
-  delay(500);
+
+  myDFPlayer.pause();
+  isPaused = true;
+  D_println("-Paused- ");
 }
 
 void resume(){
 
-  if(initSound == false && folder_changed == false){
-    myDFPlayer.resume();
-    D_println("-Resumed- ");
-  }
-  
-  if(initSound == true){
-    myDFPlayer.playFolder(actual_folder,actual_track_n);
-    D_println("-Playing first song- ");
-    initSound = false;
-  }
-
-  if(folder_changed == true){
-    myDFPlayer.playFolder(actual_folder,actual_track_n);
-    D_println("-Playing first song- ");
-    folder_changed = false;
-  }
-  
-  
-  delay(500);
+  myDFPlayer.resume();
+  isPaused = false;
+  D_println("-Resumed- ");
 }
 
 int checkForErrors() {
