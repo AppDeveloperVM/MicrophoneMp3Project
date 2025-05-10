@@ -22,7 +22,7 @@ ezButton PAUSE_BUTTON(9);
 
 #define BUSY_PIN 2
 
-#define VOLUME_LEVEL 3 // 0 - 30 ( 18 is a good level )
+#define VOLUME_LEVEL 7 // 0 - 30 ( 18 is a good level )
 #define MAX_VLM_LVL 23
 #define MP3_SOUNDS_FOLDER 10
 
@@ -166,7 +166,7 @@ void handlePowerButton() {
     if (digitalRead(POWER_BUTTON) == currentState) {
       unsigned long now = millis();
 
-      if (now - lastPressTime > 800) {
+      if (now - lastPressTime > 400) {
         D_println();
         D_print("Power button pressed. New state: ");
         D_println(currentState);
