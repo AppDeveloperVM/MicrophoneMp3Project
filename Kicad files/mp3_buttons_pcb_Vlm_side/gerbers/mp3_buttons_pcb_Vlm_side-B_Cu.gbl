@@ -1,0 +1,51 @@
+%TF.GenerationSoftware,KiCad,Pcbnew,(5.1.10)-1*%
+%TF.CreationDate,2021-08-05T17:53:58+02:00*%
+%TF.ProjectId,mp3_buttons_pcb_Vlm_side,6d70335f-6275-4747-946f-6e735f706362,rev?*%
+%TF.SameCoordinates,Original*%
+%TF.FileFunction,Copper,L2,Bot*%
+%TF.FilePolarity,Positive*%
+%FSLAX46Y46*%
+G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
+G04 Created by KiCad (PCBNEW (5.1.10)-1) date 2021-08-05 17:53:58*
+%MOMM*%
+%LPD*%
+G01*
+G04 APERTURE LIST*
+%TA.AperFunction,ComponentPad*%
+%ADD10R,1.508000X1.508000*%
+%TD*%
+%TA.AperFunction,ComponentPad*%
+%ADD11C,1.508000*%
+%TD*%
+%TA.AperFunction,ComponentPad*%
+%ADD12R,1.700000X1.700000*%
+%TD*%
+%TA.AperFunction,ComponentPad*%
+%ADD13O,1.700000X1.700000*%
+%TD*%
+G04 APERTURE END LIST*
+D10*
+%TO.P,RV1,1*%
+%TO.N,GND*%
+X201376280Y-136355320D03*
+D11*
+%TO.P,RV1,2*%
+%TO.N,Net-(J1-Pad2)*%
+X201376280Y-140355320D03*
+%TO.P,RV1,3*%
+%TO.N,+5V*%
+X201376280Y-144355320D03*
+%TD*%
+D12*
+%TO.P,J1,1*%
+%TO.N,GND*%
+X196469000Y-137457180D03*
+D13*
+%TO.P,J1,2*%
+%TO.N,Net-(J1-Pad2)*%
+X196469000Y-139997180D03*
+%TO.P,J1,3*%
+%TO.N,+5V*%
+X196469000Y-142537180D03*
+%TD*%
+M02*

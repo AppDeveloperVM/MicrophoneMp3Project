@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name kiCAD_projects-rescue)(type Legacy)(uri ${KIPRJMOD}/kiCAD_projects-rescue.lib)(options "")(descr ""))
+)
